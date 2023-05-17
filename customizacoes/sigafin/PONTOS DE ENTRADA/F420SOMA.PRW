@@ -1,0 +1,9 @@
+
+
+USER Function F420SOMA()
+
+nValorTit :=0
+
+nValorTit := SE2->E2_SALDO+SE2->E2_SDACRES+SE2->E2_XJUROS+SE2->E2_XMULTA-(SE2->E2_SDDECRE+SE2->E2_XDESCON)
+
+return nValorTit
