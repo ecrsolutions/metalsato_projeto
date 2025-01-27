@@ -128,20 +128,16 @@ oReport:SetLandscape()
 oSection1:= TRSection():New(oReport,STR0064,{"SC1","SB1","SB2"},/*aOrdem*/)
 oSection1:SetHeaderPage()
 
-TRCell():New(oSection1,"C1_ITEM"   ,"SC1",/*Titulo*/,/*Picture*/,/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
-TRCell():New(oSection1,"C1_PRODUTO","SC1",/*Titulo*/,/*Picture*/,TamSX3("C1_PRODUTO")[1]+10,/*lPixel*/,/*{|| code-block de impressao }*/)
+TRCell():New(oSection1,"C1_ITEM"   	,"SC1",/*Titulo*/,/*Picture*/,/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
+TRCell():New(oSection1,"C1_PRODUTO"	,"SC1",/*Titulo*/,/*Picture*/,TamSX3("C1_PRODUTO")[1]+10,/*lPixel*/,/*{|| code-block de impressao }*/)
 TRCell():New(oSection1,"C1_QUANT"   ,"SC1",/*Titulo*/,PesqPict("SC1","C1_QUANT" ,12),/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
-TRCell():New(oSection1,"DESCPROD"  ,"   ",STR0049,/*Picture*/,30,/*lPixel*/, {|| "teste" })
-TRCell():New(oSection1,"B2_QATU"   ,"SB2",/*Titulo*/    ,PesqPict("SB2","B2_QATU" ,12),/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
-TRCell():New(oSection1,"B1EMIN"    ,"   ",STR0050       ,PesqPict("SB1","B1_EMIN" ,12),/*Tamanho*/,/*lPixel*/,{|| RetFldProd(SB1->B1_COD,"B1_EMIN") })
-TRCell():New(oSection1,"SALDOSC1"  ,"   ",STR0051       ,PesqPict("SC1","C1_QUANT",12),/*Tamanho*/,/*lPixel*/,{|| (cAliasSC1)->C1_QUANT-(cAliasSC1)->C1_QUJE })
-TRCell():New(oSection1,"C1_UM"     ,"SC1",/*Titulo*/    ,PesqPict("SC1","C1_UM"),/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
-TRCell():New(oSection1,"C1_LOCAL"  ,"SC1",/*Titulo*/    ,PesqPict("SC1","C1_LOCAL"),/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
-TRCell():New(oSection1,"B1_QE"     ,"SB1",/*Titulo*/    ,PesqPict("SB1","B1_QE",09),/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
-TRCell():New(oSection1,"B1_UPRC"   ,"SB1",/*Titulo*/    ,PesqPict("SB1","B1_UPRC",12),/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
-TRCell():New(oSection1,"LEADTIME"  ,"   ",STR0052,/*Picture*/,/*Tamanho*/,/*lPixel*/,{|| CalcPrazo((cAliasSC1)->C1_PRODUTO,(cAliasSC1)->C1_QUANT)})
-TRCell():New(oSection1,"DTNECESS"  ,"   ",STR0053,/*Picture*/,/*Tamanho*/,/*lPixel*/,{|| If(Empty((cAliasSC1)->C1_DATPRF),(cAliasSC1)->C1_EMISSAO,(cAliasSC1)->C1_DATPRF) })
-TRCell():New(oSection1,"DTFORCOMP" ,"   ",STR0054,/*Picture*/,/*Tamanho*/,/*lPixel*/,{||SomaPrazo(If(Empty((cAliasSC1)->C1_DATPRF),(cAliasSC1)->C1_EMISSAO,(cAliasSC1)->C1_DATPRF), -CalcPrazo((cAliasSC1)->C1_PRODUTO,(cAliasSC1)->C1_QUANT)) })
+TRCell():New(oSection1,"DESCPROD"  	,"   ",STR0049,/*Picture*/,30,/*lPixel*/, {|| "teste" })
+TRCell():New(oSection1,"C1_UM"     	,"SC1",/*Titulo*/    ,PesqPict("SC1","C1_UM"),/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
+TRCell():New(oSection1,"DTNECESS"  	,"   ",STR0053,/*Picture*/,/*Tamanho*/,/*lPixel*/,{|| If(Empty((cAliasSC1)->C1_DATPRF),(cAliasSC1)->C1_EMISSAO,(cAliasSC1)->C1_DATPRF) })
+TRCell():New(oSection1,"C1_CC"  	,"SC1",/*Titulo*/    ,PesqPict("SC1","C1_CC"),/*Tamanho*/,/*lPixel*/,/*{|| code-block de impressao }*/)
+TRCell():New(oSection1,"DESCCC"  	,"   ",'Descr CC',/*Picture*/,30,/*lPixel*/, {|| "centrocusto" })
+TRCell():New(oSection1,"C1_OBS"  	,"   ",/*Titulo*/,/*Picture*/,50,/*lPixel*/, {|| "observacao" })
+
 oSection1:Cell("DESCPROD"):SetLineBreak(.T.) 
 
 Return(oReport)
@@ -252,6 +248,7 @@ TRPosition():New(oSection1,"SB2",1,{ || xFilial("SB2") + (cAliasSC1)->C1_PRODUTO
 TRPosition():New(oSection1,"SB3",1,{ || xFilial("SB3") + (cAliasSC1)->C1_PRODUTO })
 TRPosition():New(oSection1,"SD4",1,{ || xFilial("SD4") + (cAliasSC1)->C1_PRODUTO })
 TRPosition():New(oSection1,"SC7",1,{ || xFilial("SC7") + (cAliasSC1)->C1_NUM + (cAliasSC1)->C1_ITEM })
+TRPosition():New(oSection1,"CTT",1,{ || xFilial("CTT") + (cAliasSC1)->C1_CC })
 
 //ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 //³ Executa o CodeBlock com o PrintLine da Sessao 1 toda vez que rodar o oSection1:Init()   ³
@@ -288,7 +285,7 @@ While !oReport:Cancel() .And. !(cAliasSC1)->(Eof()) .And. (cAliasSC1)->C1_FILIAL
 	//³ "Solicitacao de Compra  C.Custo :   a.Emissao"	           ³
 	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
     cEmissao := IIf((cAliasSC1)->C1_QTDREEM > 0 , Str(If((cAliasSC1)->C1_QTDREEM < nVlrMax,(cAliasSC1)->C1_QTDREEM + 1,(cAliasSC1)->C1_QTDREEM) ,2) + STR0045 , " " )//"a.Emissao 
-	oReport:SetTitle(STR0002+"     "+STR0043+" "+Substr((cAliasSC1)->C1_NUM,1,6)+" "+STR0018+" "+(cAliasSC1)->C1_CC+Space(20)+cEmissao )
+	oReport:SetTitle(STR0002+"     "+STR0043+" "+Substr((cAliasSC1)->C1_NUM,1,6)+" "+Space(20)+cEmissao )
 
 	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 	//³ Inicializa o descricao do Produto conf. parametro digitado.³
@@ -316,21 +313,18 @@ While !oReport:Cancel() .And. !(cAliasSC1)->(Eof()) .And. (cAliasSC1)->C1_FILIAL
 	oSection1:Cell("C1_PRODUTO"):SetValue((cAliasSC1)->C1_PRODUTO)
 	oSection1:Cell("C1_QUANT"):SetValue((cAliasSC1)->C1_QUANT)
 	oSection1:Cell("DESCPROD"):SetValue(SB1->B1_DESC)
-	oSection1:Cell("B2_QATU"):SetValue(posicione("SB2",1,XFILIAL("SB2")+(cAliasSC1)->C1_PRODUTO+(cAliasSC1)->C1_LOCAL,"B2_QATU"))
-	oSection1:Cell("SALDOSC1"):SetValue((cAliasSC1)->C1_QUANT-(cAliasSC1)->C1_QUJE)
 	oSection1:Cell("C1_UM"):SetValue((cAliasSC1)->C1_UM)
-	oSection1:Cell("C1_LOCAL"):SetValue((cAliasSC1)->C1_LOCAL)
-	oSection1:Cell("B1_QE"):SetValue(SB1->B1_QE)
-	oSection1:Cell("B1_UPRC"):SetValue(SB1->B1_UPRC)
-	oSection1:Cell("LEADTIME"):SetValue(CalcPrazo((cAliasSC1)->C1_PRODUTO,(cAliasSC1)->C1_QUANT))
 	oSection1:Cell("DTNECESS"):SetValue(If(Empty((cAliasSC1)->C1_DATPRF),(cAliasSC1)->C1_EMISSAO,(cAliasSC1)->C1_DATPRF))
-	oSection1:Cell("DTFORCOMP"):SetValue(SomaPrazo(If(Empty((cAliasSC1)->C1_DATPRF),(cAliasSC1)->C1_EMISSAO,(cAliasSC1)->C1_DATPRF), -CalcPrazo((cAliasSC1)->C1_PRODUTO,(cAliasSC1)->C1_QUANT)) )
+	oSection1:Cell("C1_CC"):SetValue((cAliasSC1)->C1_CC)
+	oSection1:Cell("DESCCC"):SetValue(posicione("CTT",1,XFILIAL("CTT")+(cAliasSC1)->C1_CC,"CTT_DESC01"))
+	oSection1:Cell("C1_OBS"):SetValue((cAliasSC1)->C1_OBS)
+
 	oSection1:Printline()
 	
 	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 	//³ Impressao das observacoes da solicitacao (caso exista)       ³
 	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
-	If !Empty((cAliasSC1)->C1_OBS)
+	/*If !Empty((cAliasSC1)->C1_OBS)
 		oReport:PrintText(STR0019,,oSection1:Cell("C1_ITEM"):ColPos()) // "OBSERVACOES:"
 
 		For nX := 1 To 258 Step 129
@@ -342,7 +336,7 @@ While !oReport:Cancel() .And. !(cAliasSC1)->(Eof()) .And. (cAliasSC1)->C1_FILIAL
 
 		oReport:ThinLine()
 
-	Endif
+	Endif*/
 
 	dbSelectArea(cAliasSC1)
 	dbSkip()
