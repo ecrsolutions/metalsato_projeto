@@ -90,7 +90,7 @@ Pergunte("MTR140",.F.)
 //³                                                                        ³
 //ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 oReport := TReport():New("MTR140",cTitle,If(lAuto,Nil,"MTR140"), {|oReport| ReportPrint(oReport,cAliasSC1,nReg)},STR0001) //"Emissao das solicitacoes de compras cadastradas"
-oReport:SetLandscape() 
+//oReport:SetLandscape() 
 //ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 //³Criacao da secao utilizada pelo relatorio                               ³
 //³                                                                        ³
@@ -285,7 +285,7 @@ While !oReport:Cancel() .And. !(cAliasSC1)->(Eof()) .And. (cAliasSC1)->C1_FILIAL
 	//³ "Solicitacao de Compra  C.Custo :   a.Emissao"	           ³
 	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
     cEmissao := IIf((cAliasSC1)->C1_QTDREEM > 0 , Str(If((cAliasSC1)->C1_QTDREEM < nVlrMax,(cAliasSC1)->C1_QTDREEM + 1,(cAliasSC1)->C1_QTDREEM) ,2) + STR0045 , " " )//"a.Emissao 
-	oReport:SetTitle(STR0002+"     "+STR0043+" "+Substr((cAliasSC1)->C1_NUM,1,6)+" "+Space(20)+cEmissao )
+	oReport:SetTitle(STR0002+"     "+STR0043+" "+Substr((cAliasSC1)->C1_NUM,1,6)+" "+Space(25)+cEmissao )
 
 	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 	//³ Inicializa o descricao do Produto conf. parametro digitado.³
@@ -351,13 +351,13 @@ While !oReport:Cancel() .And. !(cAliasSC1)->(Eof()) .And. (cAliasSC1)->C1_FILIAL
 		dbSelectArea(cAliasSC1)
 
 		oReport:SkipLine() 
-		oReport:PrintText("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText(STR0038,,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("|                                                                                                            |                                                                                                             |",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("|   ------------------------------------------------------------------------------------------------------   |   -------------------------------------------------------------------------------------------------------   |",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("|                "+PADC(AllTrim(cC1_SOLICIT),15)+"                                                                             |                    "+ Padc(AllTrim(cC1_NOMAPRO),15)+ "                                                                          |",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("|                                                                                                            |                                                                                                             |",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|                 REQUISITANTE                                                           |                    AUTORIZANTE                                                           |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|                                                                                        |                                                                                          |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|   ----------------------------------------------------------------------------------   |   ------------------------------------------------------------------------------------   |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|                "+PADC(AllTrim(cC1_SOLICIT),15)+"                                                         |                    "+ Padc(AllTrim(cC1_NOMAPRO),15)+ "                                                       |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|                                                                                        |                                                                                          |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",,oSection1:Cell("C1_ITEM"):ColPos())
 		//oReport:SkipLine() 
 
 	EndIf
