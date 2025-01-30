@@ -90,6 +90,7 @@ Pergunte("MTR140",.F.)
 //³                                                                        ³
 //ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 oReport := TReport():New("MTR140",cTitle,If(lAuto,Nil,"MTR140"), {|oReport| ReportPrint(oReport,cAliasSC1,nReg)},STR0001) //"Emissao das solicitacoes de compras cadastradas"
+oReport:nFontBody	:= 8 // Define o tamanho da fonte.
 //oReport:SetLandscape() 
 //ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 //³Criacao da secao utilizada pelo relatorio                               ³
@@ -351,13 +352,13 @@ While !oReport:Cancel() .And. !(cAliasSC1)->(Eof()) .And. (cAliasSC1)->C1_FILIAL
 		dbSelectArea(cAliasSC1)
 
 		oReport:SkipLine() 
-		oReport:PrintText("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("|                 REQUISITANTE                                                           |                    AUTORIZANTE                                                           |",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("|                                                                                        |                                                                                          |",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("|   ----------------------------------------------------------------------------------   |   ------------------------------------------------------------------------------------   |",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("|                "+PADC(AllTrim(cC1_SOLICIT),15)+"                                                         |                    "+ Padc(AllTrim(cC1_NOMAPRO),15)+ "                                                       |",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("|                                                                                        |                                                                                          |",,oSection1:Cell("C1_ITEM"):ColPos())
-		oReport:PrintText("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("-------------------------------------------------------------------------------------------------------------------------------------------------------",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|                 REQUISITANTE                                           |                    AUTORIZANTE                                             |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|                                                                        |                                                                            |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|   ------------------------------------------------------------------   |   ----------------------------------------------------------------------   |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|                "+PADC(AllTrim(cC1_SOLICIT),15)+"                                         |        "+ Padc(AllTrim(cC1_NOMAPRO),15)+ "                                                     |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("|                                                                        |                                                                            |",,oSection1:Cell("C1_ITEM"):ColPos())
+		oReport:PrintText("-------------------------------------------------------------------------------------------------------------------------------------------------------",,oSection1:Cell("C1_ITEM"):ColPos())
 		//oReport:SkipLine() 
 
 	EndIf
