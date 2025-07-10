@@ -19,26 +19,40 @@
 User Function SAESTR07()
     Local aArea   := GetArea()
     Local aDados  := {}
+    Local cVolumes      :=    ''
+    Local lPAF_XVOL   :=  PAF->(FieldPos('PAF_XVOL')) > 0
+
 
     PAF->(DbSelectArea("PAF"))
     PAF->(DbSetOrder(1))
     If PAF->(dbSeek(xFilial("PAF")+PAE->PAE_CODIGO))
         While !PAF->(EOF()) .and. PAE->PAE_CODIGO == PAF->PAF_CODIGO
+            If lPAF_XVOL
+                cVolumes    +=  AllTrim( PAF->PAF_XVOL ) + ','
+            EndIf
             aAdd(aDados,{PAF->PAF_ITEM,;    //1
                         PAF->PAF_PRODUT,;   //2
                         PAF->PAF_DESC,;     //3
                         PAF->PAF_QUANT})    //4
             PAF->(DbSkip())
         Enddo
+
+        If !Empty( cVolumes )
+            cVolumes    :=  SubStr( cVolumes, 1, Len( cVolumes ) - 1 )
+
+        Else
+            cVolumes    :=  '--'
+
+        EndIf
     EndIf
 
     //realiza impressão da simulação
-    MsgRun("Imprimindo..."    ,"Aguarde...",{|| GetReport(aDados)  })
+    MsgRun("Imprimindo..."    ,"Aguarde...",{|| GetReport(aDados, cVolumes)  })
 
     RestArea(aArea)
 Return
 
-Static Function GetReport(aDados)
+Static Function GetReport(aDados, cVolumes)
     Local cFileName       := "SAESTR07_"+Dtos(MSDate())+StrTran(Time(),":","")
     Local cPathInServer   := "C:\temp\"
     Local lAdjustToLegacy := .T.
@@ -141,7 +155,8 @@ Static Function GetReport(aDados)
                 oPrinter:Say( nLinha, nColuna+0000, "Data Necessidade: "+dtoc(PAE->PAE_DTNEC)  ,oTFont12)
                 nLinha += nEspacoLin*1.5
                 oPrinter:Say( nLinha, nColuna+0000, "Solicitante: "+PAE->PAE_NOME              ,oTFont12)
-
+                nLinha += nEspacoLin*1.5
+                oPrinter:Say( nLinha, nColuna+0000, "Volumes: "+cVolumes                       ,oTFont12)
 
             //cabeçalho colunas
                 nLinha += nEspacoLin*2

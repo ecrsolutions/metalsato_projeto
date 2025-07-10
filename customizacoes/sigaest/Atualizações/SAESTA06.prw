@@ -22,12 +22,13 @@ User Function SAESTA06
 	Local nJanAltu    := aTamanho[6]
     Local aHead       := {}
     Local aHead2      := {}
-    Local aAlter      := {"PAF_QUANT","LOCAL"}
+    Local aAlter      := {"PAF_QUANT","LOCAL","PAF_XVOL"}
     Local aAlter2     := {}
     Local aButtons    := {}
     Local aCampos     := {}
     Local aCampos2    := {}
     Local aArea         := GetArea()
+    Local lPAF_XVOL   :=  PAF->(FieldPos('PAF_XVOL')) > 0
     Private aCols     := {}
     Private aCols2    := {}
     Private oBrw      := Nil
@@ -51,13 +52,24 @@ User Function SAESTA06
     PAF->(dbSetOrder(1))
     If PAF->(dbSeek(xFilial("PAF")+PAE->PAE_CODIGO))
         While PAF->PAF_CODIGO == PAE->PAE_CODIGO .and. !EOF()
-            aAdd(aCols ,{   PAF->PAF_ITEM,;
-                            PAF->PAF_PRODUT,;
-                            Posicione("SB1",1,xFilial("SB1")+PAF->PAF_PRODUT,"B1_DESC"),;
-                            Posicione("SB1",1,xFilial("SB1")+PAF->PAF_PRODUT,"B1_UM"),;
-                            0,;
-                            SPACE(TAMSX3("B1_LOCPAD")[1]),;
-                            .F.})
+            If lPAF_XVOL
+                aAdd(aCols ,{   PAF->PAF_ITEM,;
+                                PAF->PAF_PRODUT,;
+                                Posicione("SB1",1,xFilial("SB1")+PAF->PAF_PRODUT,"B1_DESC"),;
+                                Posicione("SB1",1,xFilial("SB1")+PAF->PAF_PRODUT,"B1_UM"),;
+                                0,;
+                                SPACE(TAMSX3("B1_LOCPAD")[1]),;
+                                SPACE(TAMSX3("PAF_XVOL")[1]),;
+                                .F.})
+            Else
+                aAdd(aCols ,{   PAF->PAF_ITEM,;
+                                PAF->PAF_PRODUT,;
+                                Posicione("SB1",1,xFilial("SB1")+PAF->PAF_PRODUT,"B1_DESC"),;
+                                Posicione("SB1",1,xFilial("SB1")+PAF->PAF_PRODUT,"B1_UM"),;
+                                0,;
+                                SPACE(TAMSX3("B1_LOCPAD")[1]),;
+                                .F.})
+            EndIf
         
             PAF->(DbSkip())
         Enddo
@@ -87,6 +99,10 @@ User Function SAESTA06
     aAdd(aCampos, { "B1_UM"       , "U.M."            ,"UM"          })
     aAdd(aCampos, { "PAF_QUANT"   , "Qtd. Entregue"   ,"PAF_QUANT"   })
     aAdd(aCampos, { "B1_LOCPAD"   , "Armazém"         ,"LOCAL"       })
+    If lPAF_XVOL
+        aAdd(aCampos, { "PAF_XVOL"   , "Volume"       ,"PAF_XVOL"    })
+
+    EndIf
 
     aAdd(aCampos2, { "NNT_PROD"    , "Código"          ,"PRODUTO"     })
     aAdd(aCampos2, { "PAF_DESC"    , "Código"          ,"DESCRICAO"   })
@@ -149,8 +165,8 @@ Static Function SetTransf()
     For nI:=1 to Len(oBrw:aCols)
         If !(oBrw:aCols[nI,len(oBrw:aCols[nI])]) .and. oBrw:aCols[nI,5] > 0
             aDadosIte := {}
-            aAdd(aDadosIte, {"NNT_FILIAL" , FWCodFil()          , Nil})
-            aAdd(aDadosIte, {"NNT_FILORI" , FWCodFil()          , Nil})
+            aAdd(aDadosIte, {"NNT_FILIAL" , xFilial('NNT')      , Nil})
+            aAdd(aDadosIte, {"NNT_FILORI" , cFilAnt             , Nil})
             aAdd(aDadosIte, {"NNT_PROD"   , oBrw:aCols[nI,2]    , Nil})
             aAdd(aDadosIte, {"NNT_LOCAL"  , oBrw:aCols[nI,6]    , Nil})
             aAdd(aDadosIte, {"NNT_QUANT"  , oBrw:aCols[nI,5]    , Nil})
@@ -216,10 +232,41 @@ Static Function SetPAE()
     Local lParcial := .F.
     Local lAberto  := .F.
     Local aArea         := GetArea()
+    Local lPAF_XVOL   :=  PAF->(FieldPos('PAF_XVOL')) > 0
+    Local nI
 
     PAF->(DbSelectArea("PAF"))
     PAF->(DbSetOrder(2))
     If PAF->(dbSeek(xFilial("PAF")+PAE->PAE_CODIGO))
+        //Atualiza PAF - campo PAF_XVOL
+        If lPAF_XVOL
+            For nI:=1 to Len(oBrw:aCols)
+                If !(oBrw:aCols[nI,len(oBrw:aCols[nI])]) .and. oBrw:aCols[nI,5] > 0 .And. !Empty( oBrw:aCols[nI,7] )
+                    If PAF->(dbSeek(xFilial("PAF")+PAE->PAE_CODIGO))
+                        While !(PAF->(EOF())) .and. PAF->PAF_CODIGO == PAE->PAE_CODIGO
+                            If PAF->PAF_ITEM == oBrw:aCols[nI,1] .And. PAF->PAF_PRODUT == oBrw:aCols[nI,2]
+                                Reclock("PAF",.F.)
+                                    PAF->PAF_XVOL   :=  oBrw:aCols[nI,7]
+                                MsUnlock()
+
+                                exit
+
+                            EndIf
+
+                            PAF->(DbSkip())
+
+                        end
+
+                    EndIf
+
+                EndIf
+
+            Next nI
+
+            PAF->(dbSeek(xFilial("PAF")+PAE->PAE_CODIGO))
+
+        EndIf
+
         While !(PAF->(EOF())) .and. PAF->PAF_CODIGO == PAE->PAE_CODIGO
             NNT->(DbSelectArea("NNT"))
             NNT->(DbSetOrder(2))

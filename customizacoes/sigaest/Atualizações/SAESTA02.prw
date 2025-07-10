@@ -117,6 +117,7 @@ Static Function ViewDef()
 	Local oStPAE := FWFormStruct(2,cAliasPAE)
 	Local oStPAF := FWFormStruct(2,cAliasPAF)
 	Local oView
+    Local lPAF_XVOL   :=  PAF->(FieldPos('PAF_XVOL')) > 0
 
 	//Criando a view que sera o retorno da funcao e setando o modelo da rotina
 		oView := FWFormView():New()
@@ -152,6 +153,9 @@ Static Function ViewDef()
         oStPAE:RemoveField( "PAE_STATUS" )
 	    oStPAF:RemoveField( "PAF_CODIGO" )
         oStPAF:RemoveField( "PAF_FILIAL" )
+        If lPAF_XVOL
+            oStPAF:RemoveField( "PAF_XVOL" )
+        EndIf
 Return oView
 
 Static Function MVCInit(oModel)
