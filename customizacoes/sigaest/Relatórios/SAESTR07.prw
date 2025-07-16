@@ -140,7 +140,7 @@ Static Function GetReport(aDados, cVolumes)
                 nLinha += nEspacoLin*1.5
                                 
                 nLinha += nEspacoLin*2
-                oPrinter:SayAlign( nLinha,nColuna,"Solicitação de materiais - Depósito",oTFont16,nWidght,,, 2, 1 )
+                oPrinter:SayAlign( nLinha,nColuna,"Solicitação de materiais - Almoxarifado",oTFont16,nWidght,,, 2, 1 )
 
                 //cria linha horizontal
                 nLinha += nEspacoLin*1.5

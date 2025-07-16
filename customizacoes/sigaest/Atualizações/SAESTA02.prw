@@ -66,6 +66,7 @@ Static Function ModelDef()
 	Local oStPAF := FWFormStruct(1,cAliasPAF)
 	Local aPAFRel := {} //Relacionamento Master-Detail 
 	Local bVldPos := {|oModel| PAEPos(oModel)} // Bloco de cóigo das validações
+    Local lPAF_XVOL   :=  PAF->(FieldPos('PAF_XVOL')) > 0
 
 	//Instanciando o modelo, nao é recomendado colocar nome da user function (por causa do u_), respeitando 10 caracteres
 		oModel := MPFormModel():New( "PAEMODEL",/*bPre*/, bVldPos, /*bCommit*/,/*bCancel*/)
@@ -105,7 +106,9 @@ Static Function ModelDef()
         oStPAE:SetProperty( 'PAE_EMISSA' , MODEL_FIELD_INIT ,FwBuildFeature(STRUCT_FEATURE_INIPAD, 'ddatabase'                    ))  
         oStPAE:SetProperty( 'PAE_HORA'   , MODEL_FIELD_INIT ,FwBuildFeature(STRUCT_FEATURE_INIPAD, 'time()'                       ))                                                          
         oStPAF:SetProperty( 'PAF_PRODUT' , MODEL_FIELD_VALID,{|| VldField()                                                       })
-
+        If lPAF_XVOL
+            oStPAF:SetProperty( 'PAF_XVOL'   , MODEL_FIELD_WHEN,{|| .F. })
+        EndIf
         //oModel:SetActivate({|oModel| MVCInit(oModel)}) // FOCO
 Return oModel
 
@@ -153,9 +156,7 @@ Static Function ViewDef()
         oStPAE:RemoveField( "PAE_STATUS" )
 	    oStPAF:RemoveField( "PAF_CODIGO" )
         oStPAF:RemoveField( "PAF_FILIAL" )
-        If lPAF_XVOL
-            oStPAF:RemoveField( "PAF_XVOL" )
-        EndIf
+
 Return oView
 
 Static Function MVCInit(oModel)
